@@ -1,4 +1,4 @@
-# Juniper PyEZ Example: Retrieve Route Table
+# Juniper PyEZ Example: Retrieve interface configuration
 
 This example will show how to use PyEZ to 
 
