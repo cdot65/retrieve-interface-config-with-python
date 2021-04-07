@@ -97,30 +97,26 @@ from lxml import etree
 ```
 
 - Our goal now is to build the SSH connection to the remote device
-- We create a new Python object called `network_device`, based on the parameters passed into the `Device` class
+- We create a new Python object called `firewall`, based on the parameters passed into the `Device` class
 
 ```python
-with Device(host='dallas-fw0', user='automation', password='juniper123') as network_device:
+with Device(host='dallas-fw0', user='automation', password='juniper123') as firewall:
 ```
 
-- by using the `try/exempt` feature in Python, we can enable our script to handle exception errors easily.
-- here we tell Python to "try to do this code, but if you get an exemption, go about your day"
-- the code we're running in `try/exempt` is making a remote proceedure call (RPC) for the routing table
-- we pass an argument into the request, asking for the return payload be structured in JSON
-- the resulting output from the RPC is stored in a new object called `route_table`
+- we build an XML filter based on the XPATH `show configuration | display xml`
+- issue the `get-config` RPC with the XML filter applied as a parameter
+- the resulting output from the RPC is stored in a new object called `data`
 
 ```python
-    try:
-        route_table = network_device.rpc.get_route_information({'format': 'json'})
-    except:
-        pass
+    filter = '<configuration><interfaces><interface></interface></interfaces></configuration>'
+    data = firewall.rpc.get_config(filter_xml=filter)
 ```
 
-- finally, we are simply printing out the object `route_table` to the screen.
-- using the `pprint` function we imported at the top of the screen, we get basic formatting of our object.
+- finally, we are simply printing out the object `data` to the screen.
+- using the `etree` method we imported at the top, we convert the output to a string and print to screen.
 
 ```python
-pprint(route_table)
+    print(etree.tostring(data, encoding='unicode', pretty_print=True))  
 ```
 
 
